@@ -51,7 +51,6 @@ const Register = () => {
         const valid = validatePassword();
         if (valid) {
             if (password === repassword) {
-                console.log(auth, 'halo')
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         // Signed in 

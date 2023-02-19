@@ -1,21 +1,49 @@
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FaUser } from 'react-icons/fa';
 import { RiShieldKeyholeFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'
+import Alert from 'react-bootstrap/Alert';
+import { auth } from '../config/firebase'
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 const Login = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('');
+
     const navigate = useNavigate()
 
+    const handleEmail = (e) => {
+        setEmail(e.target.value)
+    }
+
+    const handlePassword = (e) => {
+        setPassword(e.target.value)
+    }
     const onRegister = () => {
         navigate('/register')
     }
 
-    const onLogin = () => {
-        navigate('/dashboard')
+    const onLogin = async () => {
+        setError('')
+        try {
+            const user = await signInWithEmailAndPassword(auth, email, password)
+            localStorage.setItem("data", user.user.email)
+            navigate('/dashboard')
+
+        } catch (error) {
+            setError('Username and Password Wrong')
+        }
+
     }
     return (
         <>
-            <div className='d-flex h-full  justify-content-center align-items-center' >
+            <div className='d-flex h-full flex-column justify-content-center align-items-center' >
+                {error && error.length > 0 ? (<Alert key={'danger'} variant={'danger'}>
+                    {error}
+                </Alert>) : (<></>)}
                 <div className='bg-grad border border-primary p-3 ' style={{ width: '400px', borderRadius: '16px' }}>
                     <div className='d-flex justify-content-center'>
                         <div className='bg-avatar'>
@@ -28,9 +56,11 @@ const Login = () => {
                                 <FaUser />
                             </InputGroup.Text>
                             <Form.Control
-                                placeholder="Username"
-                                aria-label="Username"
+                                placeholder="Email"
+                                aria-label="Email"
                                 aria-describedby="basic-addon1"
+                                value={email}
+                                onChange={handleEmail}
                             />
                         </InputGroup>
                     </div>
@@ -42,7 +72,10 @@ const Login = () => {
                             <Form.Control
                                 placeholder="Password"
                                 aria-label="Password"
+                                type='password'
                                 aria-describedby="basic-addon2"
+                                value={password}
+                                onChange={handlePassword}
                             />
                         </InputGroup>
                     </div>

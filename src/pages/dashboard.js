@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
@@ -6,9 +6,15 @@ import Button from 'react-bootstrap/Button';
 
 const Dashboard = () => {
     const [show, setShow] = useState(false);
+    const [email, setEmail] = useState('');
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    useEffect(() => {
+        const email = localStorage.getItem("data")
+        setEmail(email)
+    }, [])
     return (
         <>
             <div className="d-flex h-full justify-content-center align-items-center">
@@ -17,11 +23,9 @@ const Dashboard = () => {
                         <div>
                             Selamat Datang
                         </div>
+
                         <div className='mt-3'>
-                            Username
-                        </div>
-                        <div className='mt-3'>
-                            Email
+                            Email : {email}
                         </div>
                         <div className='mt-3 d-flex justify-content-center'>
                             <div className='bg-button' style={{ cursor: 'pointer' }} onClick={handleShow}>Ubah Password</div>
